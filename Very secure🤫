@@ -1,23 +1,185 @@
+-- Roblox executor script: Charge Jump + Dash GUI (Minimizable + Draggable) by LocalBlox
 
-local a=game:GetService("Players")local b=a.LocalPlayer;repeat wait()until b.Character and b.Character:FindFirstChild("HumanoidRootPart")local c=b.Character;local d=c:WaitForChild("HumanoidRootPart")local e=Instance.new("ScreenGui",game:GetService("CoreGui"))e.Name="CJD_GUI"e.ResetOnSpawn=false
-local function f(g,h)local i=Instance.new("Frame")i.Size=UDim2.new(0,300,0,160)i.Position=UDim2.new(0.5,-150,0.5,h)i.BackgroundColor3=Color3.fromRGB(30,30,30)i.Active=true;i.Draggable=true;i.Parent=e
-local j=Instance.new("TextLabel")j.Size=UDim2.new(1,-30,0,30)j.Position=UDim2.new(0,0,0,0)j.BackgroundTransparency=1;j.Text=g;j.TextColor3=Color3.new(1,1,1)j.Font=Enum.Font.SourceSansBold;j.TextSize=20;j.Parent=i
-local k=Instance.new("TextButton")k.Size=UDim2.new(0,30,0,30)k.Position=UDim2.new(1,-30,0,0)k.Text="-"k.BackgroundColor3=Color3.fromRGB(60,60,60)k.TextColor3=Color3.new(1,1,1)k.Font=Enum.Font.SourceSansBold;k.TextSize=20;k.Parent=i
-local l=Instance.new("Frame")l.Position=UDim2.new(0,10,0,40)l.Size=UDim2.new(1,-20,0,20)l.BackgroundColor3=Color3.fromRGB(100,100,100)l.BorderSizePixel=0;l.Parent=i
-local m=Instance.new("Frame")m.Size=UDim2.new(0,0,1,0)m.BackgroundColor3=Color3.fromRGB(255,255,255)m.BorderSizePixel=0;m.Parent=l
-local n=Instance.new("TextButton")n.Position=UDim2.new(0.5,-75,0,80)n.Size=UDim2.new(0,150,0,40)n.BackgroundColor3=Color3.fromRGB(120,120,120)n.Text=g;n.TextColor3=Color3.new(1,1,1)n.Font=Enum.Font.SourceSansBold;n.TextSize=22;n.Parent=i
-local o=Instance.new("TextButton")o.Size=UDim2.new(0,40,0,40)o.Position=i.Position+UDim2.new(0,130,0,60)o.BackgroundColor3=Color3.fromRGB(80,80,80)o.Text=g:sub(1,1)o.TextColor3=Color3.new(1,1,1)o.Font=Enum.Font.SourceSansBold;o.TextSize=20;o.Visible=false;o.Active=true;o.Draggable=true;o.Parent=e
-i:GetPropertyChangedSignal("Position"):Connect(function()if i.Visible then o.Position=i.Position+UDim2.new(0,130,0,60)end end)
-k.MouseButton1Click:Connect(function()i.Visible=false;o.Position=i.Position+UDim2.new(0,130,0,60)o.Visible=true end)
-o.MouseButton1Click:Connect(function()i.Position=o.Position-UDim2.new(0,130,0,60)i.Visible=true;o.Visible=false end)
-return m,n end
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+repeat wait() until player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+local character = player.Character
+local humanoidRoot = character:WaitForChild("HumanoidRootPart")
 
-local p,q=f("Charge Jump",-180)local r,s=f("Charge Dash",0)local t=0;local u=0;local v=250;local w=55;local x=false;local y=false
-local function z()if t>=150 then p.BackgroundColor3=Color3.fromRGB(255,0,0)elseif t>=70 then p.BackgroundColor3=Color3.fromRGB(255,255,0)elseif t>=50 then p.BackgroundColor3=Color3.fromRGB(0,255,0)else p.BackgroundColor3=Color3.fromRGB(255,255,255)end end
-local function A()x=true;while x and t<v do wait(0.02)t+=2;p.Size=UDim2.new(t/v,0,1,0)z()end end
-local function B()if t>0 then d.Velocity=Vector3.new(0,t,0)end t=0;p.Size=UDim2.new(0,0,1,0)p.BackgroundColor3=Color3.fromRGB(255,255,255)end
-q.MouseButton1Down:Connect(function()if not x then A()end end)q.MouseButton1Up:Connect(function()x=false;B()end)
+-- GUI Setup
+local gui = Instance.new("ScreenGui", game:GetService("CoreGui"))
+gui.Name = "ChargeJumpDashGUI"
+gui.ResetOnSpawn = false
 
-local function C()y=true;while y and u<w do wait(0.02)u+=1;r.Size=UDim2.new(u/w,0,1,0)end end
-local function D()if u>0 then local E=d.CFrame.LookVector;d.Velocity=Vector3.new(E.X*u*4,d.Velocity.Y,E.Z*u*4)end u=0;r.Size=UDim2.new(0,0,1,0)end
-s.MouseButton1Down:Connect(function()if not y then C()end end)s.MouseButton1Up:Connect(function()y=false;D()end)
+local function createBar(name, posY)
+	local frame = Instance.new("Frame")
+	frame.Size = UDim2.new(0, 300, 0, 160)
+	frame.Position = UDim2.new(0.5, -150, 0.5, posY)
+	frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	frame.Active = true
+	frame.Draggable = true
+	frame.Parent = gui
+
+	local title = Instance.new("TextLabel")
+	title.Size = UDim2.new(1, -30, 0, 30)
+	title.Position = UDim2.new(0, 0, 0, 0)
+	title.BackgroundTransparency = 1
+	title.Text = name
+	title.TextColor3 = Color3.new(1, 1, 1)
+	title.Font = Enum.Font.SourceSansBold
+	title.TextSize = 20
+	title.Parent = frame
+
+	local minimizeBtn = Instance.new("TextButton")
+	minimizeBtn.Size = UDim2.new(0, 30, 0, 30)
+	minimizeBtn.Position = UDim2.new(1, -30, 0, 0)
+	minimizeBtn.Text = "-"
+	minimizeBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	minimizeBtn.TextColor3 = Color3.new(1, 1, 1)
+	minimizeBtn.Font = Enum.Font.SourceSansBold
+	minimizeBtn.TextSize = 20
+	minimizeBtn.Parent = frame
+
+	local bar = Instance.new("Frame")
+	bar.Position = UDim2.new(0, 10, 0, 40)
+	bar.Size = UDim2.new(1, -20, 0, 20)
+	bar.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+	bar.BorderSizePixel = 0
+	bar.Parent = frame
+
+	local fill = Instance.new("Frame")
+	fill.Size = UDim2.new(0, 0, 1, 0)
+	fill.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	fill.BorderSizePixel = 0
+	fill.Parent = bar
+
+	local button = Instance.new("TextButton")
+	button.Position = UDim2.new(0.5, -75, 0, 80)
+	button.Size = UDim2.new(0, 150, 0, 40)
+	button.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
+	button.Text = name
+	button.TextColor3 = Color3.new(1, 1, 1)
+	button.Font = Enum.Font.SourceSansBold
+	button.TextSize = 22
+	button.Parent = frame
+
+	-- Minimized Cube
+	local cube = Instance.new("TextButton")
+	cube.Size = UDim2.new(0, 40, 0, 40)
+	cube.Position = frame.Position + UDim2.new(0, 130, 0, 60)
+	cube.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+	cube.Text = name:sub(1, 1)
+	cube.TextColor3 = Color3.new(1, 1, 1)
+	cube.Font = Enum.Font.SourceSansBold
+	cube.TextSize = 20
+	cube.Visible = false
+	cube.Active = true
+	cube.Draggable = true
+	cube.Parent = gui
+
+	-- Keep cube in sync with frame's position when visible
+	frame:GetPropertyChangedSignal("Position"):Connect(function()
+		if frame.Visible then
+			cube.Position = frame.Position + UDim2.new(0, 130, 0, 60)
+		end
+	end)
+
+	-- Toggle visibility
+	minimizeBtn.MouseButton1Click:Connect(function()
+		frame.Visible = false
+		cube.Position = frame.Position + UDim2.new(0, 130, 0, 60)
+		cube.Visible = true
+	end)
+
+	cube.MouseButton1Click:Connect(function()
+		frame.Position = cube.Position - UDim2.new(0, 130, 0, 60)
+		frame.Visible = true
+		cube.Visible = false
+	end)
+
+	return fill, button
+end
+
+-- Create jump and dash GUIs
+local jumpFill, jumpBtn = createBar("Charge Jump", -180)
+local dashFill, dashBtn = createBar("Charge Dash", 0)
+
+-- Mechanics
+local jumpCharge = 0
+local dashCharge = 0
+local maxJump = 250
+local maxDash = 55
+local chargingJump = false
+local chargingDash = false
+
+local function updateJumpColor()
+	if jumpCharge >= 150 then
+		jumpFill.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	elseif jumpCharge >= 70 then
+		jumpFill.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+	elseif jumpCharge >= 50 then
+		jumpFill.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+	else
+		jumpFill.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	end
+end
+
+local function chargeJump()
+	chargingJump = true
+	while chargingJump and jumpCharge < maxJump do
+		wait(0.02)
+		jumpCharge += 2
+		jumpFill.Size = UDim2.new(jumpCharge / maxJump, 0, 1, 0)
+		updateJumpColor()
+	end
+end
+
+local function releaseJump()
+	if jumpCharge > 0 then
+		humanoidRoot.Velocity = Vector3.new(0, jumpCharge, 0)
+	end
+	jumpCharge = 0
+	jumpFill.Size = UDim2.new(0, 0, 1, 0)
+	jumpFill.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+end
+
+jumpBtn.MouseButton1Down:Connect(function()
+	if not chargingJump then
+		chargeJump()
+	end
+end)
+
+jumpBtn.MouseButton1Up:Connect(function()
+	chargingJump = false
+	releaseJump()
+end)
+
+-- Dash logic
+local function chargeDash()
+	chargingDash = true
+	while chargingDash and dashCharge < maxDash do
+		wait(0.02)
+		dashCharge += 1
+		dashFill.Size = UDim2.new(dashCharge / maxDash, 0, 1, 0)
+	end
+end
+
+local function releaseDash()
+	if dashCharge > 0 then
+		local look = humanoidRoot.CFrame.LookVector
+		humanoidRoot.Velocity = Vector3.new(look.X * dashCharge * 4, humanoidRoot.Velocity.Y, look.Z * dashCharge * 4)
+	end
+	dashCharge = 0
+	dashFill.Size = UDim2.new(0, 0, 1, 0)
+end
+
+dashBtn.MouseButton1Down:Connect(function()
+	if not chargingDash then
+		chargeDash()
+	end
+end)
+
+dashBtn.MouseButton1Up:Connect(function()
+	chargingDash = false
+	releaseDash()
+end)
