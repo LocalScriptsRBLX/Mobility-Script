@@ -1,0 +1,23 @@
+
+local a=game:GetService("Players")local b=a.LocalPlayer;repeat wait()until b.Character and b.Character:FindFirstChild("HumanoidRootPart")local c=b.Character;local d=c:WaitForChild("HumanoidRootPart")local e=Instance.new("ScreenGui",game:GetService("CoreGui"))e.Name="CJD_GUI"e.ResetOnSpawn=false
+local function f(g,h)local i=Instance.new("Frame")i.Size=UDim2.new(0,300,0,160)i.Position=UDim2.new(0.5,-150,0.5,h)i.BackgroundColor3=Color3.fromRGB(30,30,30)i.Active=true;i.Draggable=true;i.Parent=e
+local j=Instance.new("TextLabel")j.Size=UDim2.new(1,-30,0,30)j.Position=UDim2.new(0,0,0,0)j.BackgroundTransparency=1;j.Text=g;j.TextColor3=Color3.new(1,1,1)j.Font=Enum.Font.SourceSansBold;j.TextSize=20;j.Parent=i
+local k=Instance.new("TextButton")k.Size=UDim2.new(0,30,0,30)k.Position=UDim2.new(1,-30,0,0)k.Text="-"k.BackgroundColor3=Color3.fromRGB(60,60,60)k.TextColor3=Color3.new(1,1,1)k.Font=Enum.Font.SourceSansBold;k.TextSize=20;k.Parent=i
+local l=Instance.new("Frame")l.Position=UDim2.new(0,10,0,40)l.Size=UDim2.new(1,-20,0,20)l.BackgroundColor3=Color3.fromRGB(100,100,100)l.BorderSizePixel=0;l.Parent=i
+local m=Instance.new("Frame")m.Size=UDim2.new(0,0,1,0)m.BackgroundColor3=Color3.fromRGB(255,255,255)m.BorderSizePixel=0;m.Parent=l
+local n=Instance.new("TextButton")n.Position=UDim2.new(0.5,-75,0,80)n.Size=UDim2.new(0,150,0,40)n.BackgroundColor3=Color3.fromRGB(120,120,120)n.Text=g;n.TextColor3=Color3.new(1,1,1)n.Font=Enum.Font.SourceSansBold;n.TextSize=22;n.Parent=i
+local o=Instance.new("TextButton")o.Size=UDim2.new(0,40,0,40)o.Position=i.Position+UDim2.new(0,130,0,60)o.BackgroundColor3=Color3.fromRGB(80,80,80)o.Text=g:sub(1,1)o.TextColor3=Color3.new(1,1,1)o.Font=Enum.Font.SourceSansBold;o.TextSize=20;o.Visible=false;o.Active=true;o.Draggable=true;o.Parent=e
+i:GetPropertyChangedSignal("Position"):Connect(function()if i.Visible then o.Position=i.Position+UDim2.new(0,130,0,60)end end)
+k.MouseButton1Click:Connect(function()i.Visible=false;o.Position=i.Position+UDim2.new(0,130,0,60)o.Visible=true end)
+o.MouseButton1Click:Connect(function()i.Position=o.Position-UDim2.new(0,130,0,60)i.Visible=true;o.Visible=false end)
+return m,n end
+
+local p,q=f("Charge Jump",-180)local r,s=f("Charge Dash",0)local t=0;local u=0;local v=250;local w=55;local x=false;local y=false
+local function z()if t>=150 then p.BackgroundColor3=Color3.fromRGB(255,0,0)elseif t>=70 then p.BackgroundColor3=Color3.fromRGB(255,255,0)elseif t>=50 then p.BackgroundColor3=Color3.fromRGB(0,255,0)else p.BackgroundColor3=Color3.fromRGB(255,255,255)end end
+local function A()x=true;while x and t<v do wait(0.02)t+=2;p.Size=UDim2.new(t/v,0,1,0)z()end end
+local function B()if t>0 then d.Velocity=Vector3.new(0,t,0)end t=0;p.Size=UDim2.new(0,0,1,0)p.BackgroundColor3=Color3.fromRGB(255,255,255)end
+q.MouseButton1Down:Connect(function()if not x then A()end end)q.MouseButton1Up:Connect(function()x=false;B()end)
+
+local function C()y=true;while y and u<w do wait(0.02)u+=1;r.Size=UDim2.new(u/w,0,1,0)end end
+local function D()if u>0 then local E=d.CFrame.LookVector;d.Velocity=Vector3.new(E.X*u*4,d.Velocity.Y,E.Z*u*4)end u=0;r.Size=UDim2.new(0,0,1,0)end
+s.MouseButton1Down:Connect(function()if not y then C()end end)s.MouseButton1Up:Connect(function()y=false;D()end)
